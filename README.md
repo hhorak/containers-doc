@@ -1,37 +1,26 @@
-## Welcome to GitHub Pages
+## SCL.org Containers Documentation
 
-You can use the [editor on GitHub](https://github.com/hhorak/containers-doc/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
+These pages include static documentation for several containers based mostly on Software Collections.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+### Available Containers
 
-### Markdown
+#### MariaDB SQL Server
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+MariaDB container images based on Red Hat Software Collections and intended for OpenShift and general usage. Users can choose between Red Hat Enterprise Linux, Fedora, and CentOS based images. Sources for MariaDB container live at [https://github.com/sclorg/mariadb-container/](https://github.com/sclorg/mariadb-container/).
 
-```markdown
-Syntax highlighted code block
+- [MariaDB 10.0](mariadb/10.0)
+- [MariaDB 10.1](mariadb/10.1)
 
-# Header 1
-## Header 2
-### Header 3
 
-- Bulleted
-- List
+#### PostgreSQL Server
 
-1. Numbered
-2. List
+PostgreSQL container images based on Red Hat Software Collections and intended for OpenShift and general usage. Users can choose between Red Hat Enterprise Linux, Fedora, and CentOS based images. Sources for PostgreSQL container live at [https://github.com/sclorg/postgresql-container/](https://github.com/sclorg/postgresql-container/).
 
-**Bold** and _Italic_ and `Code` text
+- [PostgreSQL 9.4](postgresql/9.4)
+- [PostgreSQL 9.5](postgresql/9.5)
+- [PostgreSQL 9.6](postgresql/9.6)
 
-[Link](url) and ![Image](src)
-```
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+### Support and Contact
 
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/hhorak/containers-doc/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+Having trouble with containers or want to request a new feature? Submit an issue for particular container repository or contact SoftwareCollections SIG at [sclorg@redhat.com mailing list](https://www.redhat.com/mailman/listinfo/sclorg).
