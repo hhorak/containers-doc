@@ -15,9 +15,8 @@ Databases:
 
 Application Images:
 
-- [NodeJS](#nodejs-server)
 - [PHP Builder Image](#php-builder-image)
-- [Node.js Builder Image](#node-js-builder-image)
+- [Node.js Builder Image](#nodejs-builder-image)
 - [Python Builder Image](#python-builder-image)
 - [Ruby Builder Image](#ruby-builder-image)
 - [Perl Builder Image](#perl-builder-image)
