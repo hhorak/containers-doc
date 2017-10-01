@@ -1,30 +1,52 @@
-% POSTGRESQL-95(1) Container Image Pages
-% SoftwareCollections.org
-% July 19, 2017
+PostgreSQL Docker image
+=======================
 
-PostgreSQL 9.5 SQL Database Server Docker image
-===============================================
-
-This container image includes PostgreSQL 9.5 SQL database server for OpenShift and general usage.
+This repository contains Dockerfiles for PostgreSQL images for general usage and OpenShift.
 Users can choose between RHEL and CentOS based images.
-The RHEL image is available in the [Red Hat Container Catalog](https://access.redhat.com/containers/#/registry.access.redhat.com/rhscl/postgresql-95-rhel7)
-as registry.access.redhat.com/rhscl/postgresql-95-rhel7.
-The CentOS image is then available on [Docker Hub](https://hub.docker.com/r/centos/postgresql-95-centos7/)
-as centos/postgresql-95-centos7.
 
 
-Description
------------
+Environment variables and volumes
+----------------------------------
 
-This container image provides a containerized packaging of the PostgreSQL postgres daemon
-and client application. The postgres server daemon accepts connections from clients
-and provides access to content from PostgreSQL databases on behalf of the clients.
-You can find more information on the PostgreSQL project from the project Web site
-(https://www.postgresql.org/).
+The image recognizes the following environment variables that you can set during
+initialization by passing `-e VAR=VALUE` to the Docker run command.
 
+|    Variable name             |    Description                                 |
+| :--------------------------- | ---------------------------------------------- |
+|  `POSTGRESQL_USER`           | User name for PostgreSQL account to be created |
+|  `POSTGRESQL_PASSWORD`       | Password for the user account                  |
+|  `POSTGRESQL_DATABASE`       | Database name                                  |
+|  `POSTGRESQL_ADMIN_PASSWORD` | Password for the `postgres` admin account (optional)     |
+
+Alternatively, the following options are related to migration scenario:
+
+|    Variable name                       |    Description                         |
+| :------------------------------------- | -------------------------------------- |
+|  `POSTGRESQL_MIGRATION_REMOTE_HOST`    | Hostname/IP to migrate from            |
+|  `POSTGRESQL_MIGRATION_ADMIN_PASSWORD` | Password for the remote 'postgres' admin user |
+|  `POSTGRESQL_MIGRATION_IGNORE_ERRORS`  | Set to 'yes' to ignore sql import errors (optional, default 'no') |
+
+The following environment variables influence the PostgreSQL configuration file. They are all optional.
+
+|    Variable name              |    Description                                                          |    Default
+| :---------------------------- | ----------------------------------------------------------------------- | -------------------------------
+|  `POSTGRESQL_MAX_CONNECTIONS` | The maximum number of client connections allowed |  100
+|  `POSTGRESQL_MAX_PREPARED_TRANSACTIONS` | Sets the maximum number of transactions that can be in the "prepared" state. If you are using prepared transactions, you will probably want this to be at least as large as max_connections |  0
+|  `POSTGRESQL_SHARED_BUFFERS`  | Sets how much memory is dedicated to PostgreSQL to use for caching data |  32M
+|  `POSTGRESQL_EFFECTIVE_CACHE_SIZE`  | Set to an estimate of how much memory is available for disk caching by the operating system and within the database itself |  128M
+
+You can also set the following mount points by passing the `-v /host:/container` flag to Docker.
+
+|  Volume mount point      | Description                           |
+| :----------------------- | ------------------------------------- |
+|  `/var/lib/pgsql/data`   | PostgreSQL database cluster directory |
+
+**Notice: When mouting a directory from the host into the container, ensure that the mounted
+directory has the appropriate permissions and that the owner and group of the directory
+matches the user UID or name which is running inside the container.**
 
 Usage
------
+----------------------
 
 For this, we will assume that you are using the `rhscl/postgresql-95-rhel7` image.
 If you want to set only the mandatory environment variables and not store the database
@@ -47,52 +69,55 @@ or if it was already present, [`postgres`](http://www.postgresql.org/docs/9.5/st
 is executed and will run as PID 1. You can stop the detached container by running
 `docker stop postgresql_database`.
 
+Data migration
+----------------------
 
+PostgreSQL container supports migration of data from remote PostgreSQL server.
+You can run it like:
 
-Environment variables and volumes
----------------------------------
+```
+$ docker run -d --name postgresql_database \
+    -e POSTGRESQL_MIGRATION_REMOTE_HOST=172.17.0.2 \
+    -e POSTGRESQL_MIGRATION_ADMIN_PASSWORD=remoteAdminP@ssword \
+    [ OPTIONAL_CONFIGURATION_VARIABLES ]
+    openshift/postgresql-92-centos7
+```
 
-The image recognizes the following environment variables that you can set during
-initialization by passing `-e VAR=VALUE` to the Docker run command.
+The migration is done the **dump and restore** way (running `pg_dumpall` against
+remote cluster and importing the dump locally by `psql`).  Because the process
+is streamed (unix pipeline), there are no intermediate dump files created during
+this process to not waste additional storage space.
 
-**`POSTGRESQL_USER`**  
-       User name for PostgreSQL account to be created
+If some SQL commands fail during applying, the default behavior
+of the migration script is to fail as well to ensure the **all** or **nothing**
+result of scripted, unattended migration. In most common cases, successful
+migration is expected (but not guaranteed!), given you migrate from
+a previous version of PostgreSQL server container, that is created using
+the same principles as this one (e.g. migration from
+`openshift/postgresql-92-centos7` to `centos/postgresql-95-centos7`).
+Migration from a different kind of PostgreSQL container can likely fail.
 
-**`POSTGRESQL_PASSWORD`**  
-       Password for the user account
+If this **all** or **nothing** principle is inadequate for you, and you know
+what you are doing, there's optional `POSTGRESQL_MIGRATION_IGNORE_ERRORS` option
+which does **best effort** migration (some data might be lost, it is up to user
+to review the standard error output and fix the issues manually in
+post-migration time).
 
-**`POSTGRESQL_DATABASE`**  
-       Database name
+Please keep in mind that the container image provides help for users'
+convenience, but fully automatic migration is not guaranteed.  Thus, before you
+start proceeding with the database migration, get prepared to perform manual
+steps in order to get all your data migrated.
 
-**`POSTGRESQL_ADMIN_PASSWORD`**  
-       Password for the `postgres` admin account (optional)
+Note that you might not use variables like `POSTGRESQL_USER` in migration
+scenario, all the data (including info about databases, roles or passwords are
+copied from old cluster).  Ensure that you use the same
+`OPTIONAL_CONFIGURATION_VARIABLES` as you used for initialization of the old
+PostgreSQL container.  If some non-default configuration is done on remote
+cluster, you might need to copy the configuration files manually, too.
 
-
-The following environment variables influence the PostgreSQL configuration file. They are all optional.
-
-**`POSTGRESQL_MAX_CONNECTIONS (default: 100)`**  
-       The maximum number of client connections allowed
-
-**`POSTGRESQL_MAX_PREPARED_TRANSACTIONS (default: 0)`**  
-       Sets the maximum number of transactions that can be in the "prepared" state. If you are using prepared transactions, you will probably want this to be at least as large as max_connections
-
-**`POSTGRESQL_SHARED_BUFFERS (default: 32M)`**  
-       Sets how much memory is dedicated to PostgreSQL to use for caching data
-
-**`POSTGRESQL_EFFECTIVE_CACHE_SIZE (default: 128M)`**  
-       Set to an estimate of how much memory is available for disk caching by the operating system and within the database itself
-
-
-You can also set the following mount points by passing the `-v /host:/container` flag to Docker.
-
-**`/var/lib/pgsql/data`**  
-       PostgreSQL database cluster directory
-
-
-**Notice: When mouting a directory from the host into the container, ensure that the mounted
-directory has the appropriate permissions and that the owner and group of the directory
-matches the user UID or name which is running inside the container.**
-
+Security warning:  Note that the IP communication between old and new PostgreSQL
+clusters is not encrypted by default, it is up to user to configure SSL on
+remote cluster or ensure security via different means.
 
 PostgreSQL auto-tuning
 --------------------
@@ -164,20 +189,3 @@ what type of upgrade you'll do by setting `$POSTGRESQL_UPGRADE` appropriately:
 Note that because we copy data directory, you need to make sure that you have
 enough space for the copy;  upgrade failure because of not enough space might
 lead to data loss.
-
-
-Troubleshooting
----------------
-At first the postgres daemon writes its logs to the standard output, so these are available in the container log. The log can be examined by running:
-
-    docker logs <container>
-
-Then log output is redirected to logging collector process and will appear in directory "pg_log".
-
-
-See also
---------
-Dockerfile and other sources for this container image are available on
-https://github.com/sclorg/postgresql-container.
-In that repository, Dockerfile for CentOS is called Dockerfile, Dockerfile
-for RHEL is called Dockerfile.rhel7.
