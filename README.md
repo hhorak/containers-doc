@@ -199,8 +199,8 @@ Sources for Developer Toolset container live at [https://github.com/sclorg/devto
 Thermostat container images based on Red Hat Software Collections and intended for OpenShift and general usage. This repository contains Dockerfiles for a Thermostat Storage running in privileged mode that can be accessed by Clients and Agents through HTTP.
 Sources for Thermostat container live at [https://github.com/sclorg/thermostat-container](https://github.com/sclorg/thermostat-container).
 
-- [Thermostat Agent 1.6](thermostat/1.6-agent)
-- [Thermostat Storage 1.6](thermostat/1.6-storage)
+- [Thermostat Agent 1.6](thermostat/16-agent)
+- [Thermostat Storage 1.6](thermostat/16-storage)
 
 
 ### Support and Contact
