@@ -32,7 +32,6 @@ Other Images:
 
 - [Source-to-Image Base Image](#source-to-image-base-image)
 - [Developer Toolset](#developer-toolset)
-- [Thermostat Storage and Agent](#thermostat-storage-and-agent)
 
 
 ### PostgreSQL Server
