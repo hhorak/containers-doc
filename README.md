@@ -73,12 +73,6 @@ The MongoDB container images are based on Red Hat Software Collections and inten
 - [MongoDB 3.2](mongodb/3.2)
 - [MongoDB 3.4](mongodb/3.4)
 
-#### OpenShift examples
-
-- [Example of Secrets](mongodb/examples/secrets)
-- [Petset](mongodb/examples/petset)
-- [Replset Example](mongodb/examples/replset)
-
 
 ### Redis in-memory data structure store
 
@@ -118,15 +112,19 @@ Sources for Python container live at [https://github.com/sclorg/s2i-python-conta
 - [Python 3.5](python/3.5)
 
 
-### Ruby Builder Image
+### Ruby and Ruby on Rails Builder Images
 
 Ruby is a dynamic, reflective, object-oriented, general-purpose programming language.
 This repository contains the source for building various versions of the Ruby application as a reproducible Docker image using source-to-image, especially in PaaS OpenShift. 
 Sources for Ruby container live at [https://github.com/sclorg/s2i-ruby-container](https://github.com/sclorg/s2i-ruby-container).
-Sources for Ruby on Rails container live at [https://github.com/sclorg/ror-container](https://github.com/sclorg/ror-container).
+Sources for Ruby on Rails container live at [https://github.com/sclorg/ror-container](https://github.com/sclorg/ror-container), however the Ruby on Rails images do not support source-to-image strategy in the OpenShift.
 
+- [Ruby 2.2](ruby/2.2)
 - [Ruby 2.3](ruby/2.3)
 - [Ruby 2.4](ruby/2.4)
+- [Ruby on Rails 4.1](ror/4.1)
+- [Ruby on Rails 4.2](ror/4.2)
+- [Ruby on Rails 5.0](ror/5.0)
 
 
 ### Perl Builder Image
@@ -192,15 +190,6 @@ Sources for Developer Toolset container live at [https://github.com/sclorg/devto
 - [Developer Toolset Perftools 4](devtoolset/4-perftools)
 - [Developer Toolset Toolchain 6](devtoolset/6-toolchain)
 - [Developer Toolset Perftools 6](devtoolset/6-perftools)
-
-
-### Thermostat Storage and Agent
-
-Thermostat container images based on Red Hat Software Collections and intended for OpenShift and general usage. This repository contains Dockerfiles for a Thermostat Storage running in privileged mode that can be accessed by Clients and Agents through HTTP.
-Sources for Thermostat container live at [https://github.com/sclorg/thermostat-container](https://github.com/sclorg/thermostat-container).
-
-- [Thermostat Agent 1.6](thermostat/16-agent)
-- [Thermostat Storage 1.6](thermostat/16-storage)
 
 
 ### Support and Contact

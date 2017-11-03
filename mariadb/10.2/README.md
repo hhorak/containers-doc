@@ -1,47 +1,47 @@
-MySQL 5.6 SQL Database Server Docker image
-==========================================
+MariaDB 10.2 SQL Database Server Docker image
+=============================================
 
-This container image includes MySQL 5.6 SQL database server for OpenShift and general usage.
+This container image includes MariaDB 10.2 SQL database server for OpenShift and general usage.
 Users can choose between RHEL and CentOS based images.
-The RHEL image is available in the [Red Hat Container Catalog](https://access.redhat.com/containers/#/registry.access.redhat.com/rhscl/mysql-56-rhel7)
-as registry.access.redhat.com/rhscl/mysql-56-rhel7.
-The CentOS image is then available on [Docker Hub](https://hub.docker.com/r/centos/mysql-56-centos7/)
-as centos/mysql-56-centos7.
+The RHEL image is available in the [Red Hat Container Catalog](https://access.redhat.com/containers/#/registry.access.redhat.com/rhscl/mariadb-102-rhel7)
+as registry.access.redhat.com/rhscl/mariadb-102-rhel7.
+The CentOS image is then available on [Docker Hub](https://hub.docker.com/r/centos/mariadb-102-centos7/)
+as centos/mariadb-102-centos7.
 
 
 Description
 -----------
 
-This container image provides a containerized packaging of the MySQL mysqld daemon
+This container image provides a containerized packaging of the MariaDB mysqld daemon
 and client application. The mysqld server daemon accepts connections from clients
 and provides access to content from MySQL databases on behalf of the clients.
-You can find more information on the MySQL project from the project Web site
-(https://www.mysql.com/).
+You can find more information on the MariaDB project from the project Web site
+(https://mariadb.org/).
 
 
 Usage
 -----
 
-For this, we will assume that you are using the MySQL 5.6 container image from the
-Red Hat Container Catalog called `rhscl/mysql-56-rhel7`.
+For this, we will assume that you are using the MariaDB 10.2 container image from the
+Red Hat Container Catalog called `rhscl/mariadb-102-rhel7`.
 If you want to set only the mandatory environment variables and not store
 the database in a host directory, execute the following command:
 
 ```
-$ docker run -d --name mysql_database -e MYSQL_USER=user -e MYSQL_PASSWORD=pass -e MYSQL_DATABASE=db -p 3306:3306 rhscl/mysql-56-rhel7
+$ docker run -d --name mariadb_database -e MYSQL_USER=user -e MYSQL_PASSWORD=pass -e MYSQL_DATABASE=db -p 3306:3306 rhscl/mariadb-102-rhel7
 ```
 
-This will create a container named `mysql_database` running MySQL with database
+This will create a container named `mariadb_database` running MySQL with database
 `db` and user with credentials `user:pass`. Port 3306 will be exposed and mapped
 to the host. If you want your database to be persistent across container executions,
 also add a `-v /host/db/path:/var/lib/mysql/data` argument. This will be the MySQL
 data directory.
 
 If the database directory is not initialized, the entrypoint script will first
-run [`mysql_install_db`](https://dev.mysql.com/doc/refman/en/mysql-install-db.html)
+run [`mysql_install_db`](https://dev.mysql.com/doc/refman/5.6/en/mysql-install-db.html)
 and setup necessary database users and passwords. After the database is initialized,
 or if it was already present, `mysqld` is executed and will run as PID 1. You can
- stop the detached container by running `docker stop mysql_database`.
+ stop the detached container by running `docker stop mariadb_database`.
 
 
 Environment variables and volumes
@@ -76,7 +76,6 @@ The following environment variables influence the MySQL configuration file. They
 |  `MYSQL_INNODB_LOG_BUFFER_SIZE` | The size of the buffer that InnoDB uses to write to the log files on disk | 8M (or 15% of available memory)
 |  `MYSQL_DEFAULTS_FILE`          | Point to an alternative configuration file                        |  /etc/my.cnf
 |  `MYSQL_BINLOG_FORMAT`          | Set sets the binlog format, supported values are `row` and `statement` | statement
-|  `MYSQL_LOG_QUERIES_ENABLED`    | To enable query logging set this to `1`                           | 0
 
 You can also set the following mount points by passing the `-v /host:/container` flag to Docker.
 
@@ -89,8 +88,8 @@ directory has the appropriate permissions and that the owner and group of the di
 matches the user UID or name which is running inside the container.**
 
 
-MySQL auto-tuning
------------------
+MariaDB auto-tuning
+-------------------
 
 When the MySQL image is run with the `--memory` parameter set and you didn't
 specify value for some parameters, their values will be automatically
@@ -145,11 +144,11 @@ Extending image
 ---------------
 This image can be extended using [source-to-image](https://github.com/openshift/source-to-image).
 
-For example, to build a customized MariaDB database image `my-mysql-rhel7`
+For example, to build a customized MariaDB database image `my-mariadb-rhel7`
 with a configuration in `~/image-configuration/` run:
 
 ```
-$ s2i build ~/image-configuration/ rhscl/mysql-56-rhel7 my-mysql-rhel7
+$ s2i build ~/image-configuration/ rhscl/mariadb-102-rhel7 my-mariadb-rhel7
 ```
 
 The directory passed to `s2i build` can contain these directories:
@@ -237,6 +236,6 @@ The mysqld deamon in the container logs to the standard output, so the log is av
 See also
 --------
 Dockerfile and other sources for this container image are available on
-https://github.com/sclorg/mysql-container.
+https://github.com/sclorg/mariadb-container.
 In that repository, Dockerfile for CentOS is called Dockerfile, Dockerfile
 for RHEL is called Dockerfile.rhel7.
